@@ -31,8 +31,15 @@ function Pwn() {
 	};
 
 	const Count = (e) => {
+		const regExp = /[^0-9a-zA-Z]/g;
 		const target = e.target.value;
 		const len = target.length;
+
+		if (regExp.test(target)) {
+			element[`inp${count}`].current.value = '';
+			alert('영어, 숫자만 가능합니다');
+			return;
+		}
 
 		if (len === 1 && count <= 8) {
 			arr[count - 1] = target;
@@ -64,18 +71,23 @@ function Pwn() {
 	};
 
 	const Key = (e) => {
-		const len = e.target.value.length;
-		if (e.key === 'Backspace' && len === 0 && count > 1) {
+		const slow = e.target.value.length;
+		if (e.key === 'Backspace' && slow === 0 && count > 1) {
 			count -= 1;
 			element[`inp${count}`].current.focus();
 			status.current.style.color = 'red';
 			status.current.innerHTML = 'incorrect';
+		} else if (e.key === 'Enter') {
+			if (count === 8 && inp8.current.value.length >= 1 && status.current.innerHTML === 'correct')
+				alert('This is the CORRECT password!');
+			else alert(`This is the INCORRECT password!`);
 		}
 	};
 
 	return (
 		<Wrapper>
 			<Title>BOF</Title>
+			<Sub>Please Enter Your 4 digit Password</Sub>
 			<Container onKeyDown={(e) => Key(e)}>
 				<div>
 					<Inp onFocus={Focus} color={'green'} ref={inp1} onChange={(e) => Count(e)} type="text" maxLength={1} />
@@ -83,7 +95,7 @@ function Pwn() {
 					<Inp onFocus={Focus} color={'green'} ref={inp3} onChange={(e) => Count(e)} type="text" maxLength={1} />
 					<Inp onFocus={Focus} color={'green'} ref={inp4} onChange={(e) => Count(e)} type="text" maxLength={1} />
 				</div>
-				<Arrow src="/arrow.png" alt="error" />
+				{/* <Arrow src="/arrow.png" alt="error" /> */}
 				<div>
 					<Inp onFocus={Focus} color={'red'} ref={inp5} onChange={(e) => Count(e)} type="text" maxLength={1} />
 					<Inp onFocus={Focus} color={'red'} ref={inp6} onChange={(e) => Count(e)} type="text" maxLength={1} />
@@ -108,6 +120,14 @@ const Title = styled('h1', {
 	fontSize: '80px',
 	textAlign: 'center',
 	marginTop: '0',
+	marginBottom: '20px',
+});
+
+const Sub = styled('h3', {
+	width: '100%',
+	marginTop: '0',
+	marginBottom: '40px',
+	textAlign: 'center',
 });
 
 const Container = styled('div', {
@@ -119,7 +139,7 @@ const Container = styled('div', {
 const Inp = styled('input', {
 	width: '200px',
 	height: '200px',
-	fontSize: '200px',
+	fontSize: '175px',
 	textAlign: 'center',
 	userSelect: 'none',
 	variants: {
@@ -132,6 +152,7 @@ const Inp = styled('input', {
 			},
 		},
 	},
+	boxSizing: 'border-box',
 });
 
 const Arrow = styled('img', {
