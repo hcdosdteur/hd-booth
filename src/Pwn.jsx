@@ -12,6 +12,12 @@ function Pwn() {
 	const inp6 = useRef();
 	const inp7 = useRef();
 	const inp8 = useRef();
+	const div1 = useRef();
+	const div2 = useRef();
+	const div3 = useRef();
+	const div4 = useRef();
+	const sub = useRef();
+
 	const element = {
 		inp1: inp1,
 		inp2: inp2,
@@ -45,7 +51,15 @@ function Pwn() {
 			arr[count - 1] = target;
 			// console.log(count);
 			count += 1;
+			if (count === 6) div1.current.innerHTML = `${target}`;
+			if (count === 7) div2.current.innerHTML = `${target}`;
+			if (count === 8) div3.current.innerHTML = `${target}`;
+			if (count === 9) div4.current.innerHTML = `${target}`;
 			if (count >= 9) count = 8;
+			if (count > 4) {
+				sub.current.innerHTML = '! O V E R F L O W !';
+				sub.current.style.color = 'red';
+			}
 			element[`inp${count}`].current.focus();
 		} else if (len === 0 && count === 8) {
 			status.current.style.color = 'red';
@@ -64,7 +78,7 @@ function Pwn() {
 			if (check === 1) {
 				// console.dir(status.current);
 				status.current.style.color = 'green';
-				status.current.innerHTML = 'correct';
+				status.current.innerHTML = 'correct!';
 				// console.log('yes!', count);
 			}
 		}
@@ -75,6 +89,16 @@ function Pwn() {
 		if (e.key === 'Backspace' && slow === 0 && count > 1) {
 			count -= 1;
 			element[`inp${count}`].current.focus();
+			if (count < 5) {
+				sub.current.innerHTML = '※ 4자리 비밀번호를 입력해주세요 ※';
+				sub.current.style.color = 'white';
+			}
+			if (count === 5) {
+				div1.current.innerHTML = 'X';
+				div2.current.innerHTML = 'X';
+				div3.current.innerHTML = 'X';
+				div4.current.innerHTML = 'X';
+			}
 			status.current.style.color = 'red';
 			status.current.innerHTML = 'incorrect';
 		} else if (e.key === 'Enter') {
@@ -87,7 +111,7 @@ function Pwn() {
 	return (
 		<Wrapper>
 			<Title>BOF</Title>
-			<Sub>Please Enter Your 4 digit Password</Sub>
+			<Sub ref={sub}>※ 4자리 비밀번호를 입력해주세요 ※</Sub>
 			<Container onKeyDown={(e) => Key(e)}>
 				<div>
 					<Inp onFocus={Focus} color={'green'} ref={inp1} onChange={(e) => Count(e)} type="text" maxLength={1} />
@@ -95,7 +119,7 @@ function Pwn() {
 					<Inp onFocus={Focus} color={'green'} ref={inp3} onChange={(e) => Count(e)} type="text" maxLength={1} />
 					<Inp onFocus={Focus} color={'green'} ref={inp4} onChange={(e) => Count(e)} type="text" maxLength={1} />
 				</div>
-				{/* <Arrow src="/arrow.png" alt="error" /> */}
+				<Bound />
 				<div>
 					<Inp onFocus={Focus} color={'red'} ref={inp5} onChange={(e) => Count(e)} type="text" maxLength={1} />
 					<Inp onFocus={Focus} color={'red'} ref={inp6} onChange={(e) => Count(e)} type="text" maxLength={1} />
@@ -104,6 +128,12 @@ function Pwn() {
 				</div>
 			</Container>
 			<Bool ref={status}>incorrect</Bool>
+			<PasswordContainer>
+				<Pw ref={div1}>X</Pw>
+				<Pw ref={div2}>X</Pw>
+				<Pw ref={div3}>X</Pw>
+				<Pw ref={div4}>X</Pw>
+			</PasswordContainer>
 		</Wrapper>
 	);
 }
@@ -155,12 +185,28 @@ const Inp = styled('input', {
 	boxSizing: 'border-box',
 });
 
-const Arrow = styled('img', {
-	transform: 'scaleX(-1)',
+const Bound = styled('div', {
+	width: '.5rem',
+	backgroundColor: '#242424',
 });
 
 const Bool = styled('h1', {
 	width: '100%',
 	textAlign: 'center',
 	color: 'red',
+});
+
+const PasswordContainer = styled('div', {
+	position: 'relative',
+	display: 'flex',
+	justifyContent: 'center',
+	gap: '1rem',
+});
+
+const Pw = styled('div', {
+	width: '3rem',
+	height: '3rem',
+	fontSize: '2rem',
+	textAlign: 'center',
+	border: '2px solid gray',
 });
