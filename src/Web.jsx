@@ -56,6 +56,7 @@ function Web() {
 					<div>
 						<h1 style={{ textAlign: 'center' }}>Hello, {loginId}</h1>
 						{loginId === 'admin' && <h2>Password : super_secret_passWd</h2>}
+						{loginId === 'guest' && <h2>당신은 admin이 아닙니다! 비밀번호를 보여줄 수 없어요.</h2>}
 						<button onClick={Logout} style={{ width: '100%' }}>
 							Logout
 						</button>
@@ -77,6 +78,18 @@ function Web() {
 			<Exploit>
 				SELECT user FROM user_table WHERE id='<Span ref={refid}>{id}</Span>' AND pw='<Span ref={refpw}>{pw}</Span>'
 			</Exploit>
+			<Data>
+				<div>
+					id : guest
+					<br />
+					pw : guest
+				</div>
+				<div>
+					id : admin
+					<br />
+					pw : *****
+				</div>
+			</Data>
 		</Wrapper>
 	);
 }
@@ -125,4 +138,13 @@ const Exploit = styled('h2', {
 
 const Span = styled('span', {
 	color: 'lightgreen',
+});
+
+const Data = styled('div', {
+	display: 'flex',
+	width: '100%',
+	bottom: '0',
+	fontWeight: 'bold',
+	justifyContent: 'center',
+	gap: '4rem',
 });
